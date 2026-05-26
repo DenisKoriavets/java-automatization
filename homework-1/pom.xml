@@ -59,6 +59,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>ua.edu.ukma</groupId>
+                <artifactId>project-report-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
