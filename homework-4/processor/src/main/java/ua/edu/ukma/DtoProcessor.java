@@ -44,7 +44,7 @@ public class DtoProcessor extends AbstractProcessor {
                     if (enclosed.getKind() == ElementKind.FIELD) {
                         MinLength minLength = enclosed.getAnnotation(MinLength.class);
                         if (minLength != null) {
-                            out.println("    @ua.edu.ukma.lab.MinLength(" + minLength.value() + ")");
+                            out.println("    @ua.edu.ukma.MinLength(" + minLength.value() + ")");
                         }
                         out.println("    public " + enclosed.asType().toString() + " " + enclosed.getSimpleName() + ";\n");
                     }
@@ -52,7 +52,7 @@ public class DtoProcessor extends AbstractProcessor {
                 out.println("}");
             } catch (Exception e) {
                 processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR,
-                    "Помилка генерації DTO: " + e.getMessage());
+                    "Error generating DTO: " + e.getMessage());
             }
         }
 
