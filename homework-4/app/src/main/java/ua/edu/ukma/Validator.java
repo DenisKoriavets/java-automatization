@@ -29,7 +29,22 @@ public class Validator {
                     );
                 }
 
-                System.out.println("✅ Field '" + field.getName() + "' successfully passed validation.");
+                System.out.println("Field '" + field.getName() + "' successfully passed validation.");
+            }
+
+            if (field.isAnnotationPresent(MaxValue.class)) {
+                MaxValue rule = field.getAnnotation(MaxValue.class);
+                int limit = rule.value();
+
+                int actualValue = field.getInt(obj);
+
+                if (actualValue > limit) {
+                    throw new IllegalArgumentException(
+                        "Validation error! Field '" + field.getName() +
+                            "' has value " + actualValue + ", which exceeds the maximum allowed " + limit + "!"
+                    );
+                }
+                System.out.println("Field '" + field.getName() + "' (max value check) passed.");
             }
         }
         System.out.println("--- Validation completed successfully! ---\n");

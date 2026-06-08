@@ -4,7 +4,9 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DtoProcessor extends AbstractProcessor {
 
@@ -33,26 +35,46 @@ public class DtoProcessor extends AbstractProcessor {
             PackageElement pkgElement = processingEnv.getElementUtils().getPackageOf(classElement);
             String packageName = pkgElement.getQualifiedName().toString();
 
+            List<Element> fields = classElement.getEnclosedElements().stream()
+                .filter(e -> e.getKind() == ElementKind.FIELD
+                    && e.getAnnotation(ExcludeFromDto.class) == null)
+                .collect(Collectors.toList());
+
             try (PrintWriter out = new PrintWriter(processingEnv.getFiler()
                 .createSourceFile(packageName + "." + dtoClassName).openWriter())) {
-                if (!packageName.isEmpty()) {
-                    out.println("package " + packageName + ";\n");
-                }
-                out.println("public class " + dtoClassName + " {");
 
-                for (Element enclosed : classElement.getEnclosedElements()) {
-                    if (enclosed.getKind() == ElementKind.FIELD) {
-                        MinLength minLength = enclosed.getAnnotation(MinLength.class);
-                        if (minLength != null) {
-                            out.println("    @ua.edu.ukma.MinLength(" + minLength.value() + ")");
-                        }
-                        out.println("    public " + enclosed.asType().toString() + " " + enclosed.getSimpleName() + ";\n");
-                    }
+                if (!packageName.isEmpty()) {
+                    out.println("package " + packageName + ";");
+                    out.println();
                 }
-                out.println("}");
+
+                out.println("public record " + dtoClassName + "(");
+
+                for (int i = 0; i < fields.size(); i++) {
+                    Element field = fields.get(i);
+                    boolean isLast = (i == fields.size() - 1);
+
+                    MinLength minLength = field.getAnnotation(MinLength.class);
+                    if (minLength != null) {
+                        out.println("    @ua.edu.ukma.MinLength(" + minLength.value() + ")");
+                    }
+
+                    MaxValue maxValue = field.getAnnotation(MaxValue.class);
+                    if (maxValue != null) {
+                        out.println("    @ua.edu.ukma.MaxValue(" + maxValue.value() + ")");
+                    }
+
+                    String comma = isLast ? "" : ",";
+                    out.println("    " + field.asType().toString() + " " + field.getSimpleName() + comma);
+                }
+
+                out.println(") {}");
+
             } catch (Exception e) {
-                processingEnv.getMessager().printMessage(javax.tools.Diagnostic.Kind.ERROR,
-                    "Error generating DTO: " + e.getMessage());
+                processingEnv.getMessager().printMessage(
+                    javax.tools.Diagnostic.Kind.ERROR,
+                    "Error generating DTO: " + e.getMessage()
+                );
             }
         }
 
