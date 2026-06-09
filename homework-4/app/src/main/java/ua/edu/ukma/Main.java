@@ -16,12 +16,12 @@ public class Main {
             entity.email
         );
 
-        System.out.println("Testing valid dto for: " + dto.username());
+        System.out.println("Testing valid AccountEntityDto for: " + dto.username());
         try {
             Validator.validate(dto);
-            System.out.println("Validation passed!");
+            System.out.println("Validation passed!\n");
         } catch (Exception e) {
-            System.err.println("Validation failed: " + e.getMessage());
+            System.err.println("Validation failed: " + e.getMessage() + "\n");
         }
 
         AccountEntityDto invalidDto = new AccountEntityDto(
@@ -31,12 +31,32 @@ public class Main {
             entity.email
         );
 
-        System.out.println("\nTesting invalid dto (username too short, age > 120)...");
+        System.out.println("Testing invalid AccountEntityDto (username too short, age > 120)...");
         try {
             Validator.validate(invalidDto);
-            System.out.println("Validation passed!");
+            System.out.println("Validation passed!\n");
         } catch (Exception e) {
-            System.err.println("Validation failed: " + e.getMessage());
+            System.err.println("Validation failed: " + e.getMessage() + "\n");
+        }
+
+        UserRegistrationDto validReg = new UserRegistrationDto("Alice123");
+
+        System.out.println("Testing valid UserRegistrationDto for: " + validReg.username());
+        try {
+            Validator.validate(validReg);
+            System.out.println("Validation passed!\n");
+        } catch (Exception e) {
+            System.err.println("Validation failed: " + e.getMessage() + "\n");
+        }
+
+        UserRegistrationDto invalidReg = new UserRegistrationDto("Al");
+
+        System.out.println("Testing invalid UserRegistrationDto (username too short)...");
+        try {
+            Validator.validate(invalidReg);
+            System.out.println("Validation passed!\n");
+        } catch (Exception e) {
+            System.err.println("Validation failed: " + e.getMessage() + "\n");
         }
     }
 }

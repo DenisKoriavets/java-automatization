@@ -8,12 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SupportedAnnotationTypes("ua.edu.ukma.GenerateDto")
 public class DtoProcessor extends AbstractProcessor {
-
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        return Set.of(GenerateDto.class.getCanonicalName());
-    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {

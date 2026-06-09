@@ -13,6 +13,13 @@ public class Validator {
             field.setAccessible(true);
 
             if (field.isAnnotationPresent(MinLength.class)) {
+                if (!field.getType().equals(String.class)) {
+                    throw new IllegalArgumentException(
+                        "Configuration error! @MinLength can only be applied to String fields, " +
+                            "but field '" + field.getName() + "' is of type " + field.getType().getSimpleName()
+                    );
+                }
+
                 MinLength rule = field.getAnnotation(MinLength.class);
                 int requiredLength = rule.value();
                 String actualValue = (String) field.get(obj);
@@ -29,14 +36,27 @@ public class Validator {
                     );
                 }
 
-                System.out.println("Field '" + field.getName() + "' successfully passed validation.");
+                System.out.println("Field '" + field.getName() + "' successfully passed MinLength validation.");
             }
 
             if (field.isAnnotationPresent(MaxValue.class)) {
+                Class<?> type = field.getType();
+                if (!type.equals(int.class) && !type.equals(Integer.class)) {
+                    throw new IllegalArgumentException(
+                        "Configuration error! @MaxValue can only be applied to int/Integer fields, " +
+                            "but field '" + field.getName() + "' is of type " + type.getSimpleName()
+                    );
+                }
+
                 MaxValue rule = field.getAnnotation(MaxValue.class);
                 int limit = rule.value();
 
-                int actualValue = field.getInt(obj);
+                Object rawValue = field.get(obj);
+                if (rawValue == null) {
+                    throw new IllegalArgumentException("Error! Field '" + field.getName() + "' cannot be null.");
+                }
+
+                int actualValue = (Integer) rawValue;
 
                 if (actualValue > limit) {
                     throw new IllegalArgumentException(
@@ -44,7 +64,8 @@ public class Validator {
                             "' has value " + actualValue + ", which exceeds the maximum allowed " + limit + "!"
                     );
                 }
-                System.out.println("Field '" + field.getName() + "' (max value check) passed.");
+
+                System.out.println("Field '" + field.getName() + "' successfully passed MaxValue validation.");
             }
         }
         System.out.println("--- Validation completed successfully! ---\n");
