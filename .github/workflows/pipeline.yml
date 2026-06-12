@@ -1,0 +1,39 @@
+name: Java CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-analyze-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Завантаження коду з репозиторію
+        uses: actions/checkout@v4
+
+      - name: Налаштування Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Надання прав на виконання Gradle
+        run: chmod +x ./gradlew
+
+      - name: Статичний аналіз коду (Checkstyle)
+        run: ./gradlew :homework-5:checkstyleMain
+
+      - name: Автоматизоване тестування
+        run: ./gradlew :homework-5:test
+
+      - name: Збирання проєкту в JAR
+        run: ./gradlew :homework-5:assemble
+
+      - name: Збереження JAR як артефакту
+        uses: actions/upload-artifact@v4
+        with:
+          name: homework-5-artifact
+          path: homework-5/build/libs/*.jar
