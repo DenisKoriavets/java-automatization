@@ -38,6 +38,18 @@ checkstyle {
     toolVersion = "10.12.4"
 }
 
+tasks.register<Test>("smokeTests") {
+    useJUnitPlatform {
+        includeTags("smoke")
+    }
+}
+
+tasks.register<Test>("advancedTests") {
+    useJUnitPlatform {
+        includeTags("advanced")
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 
