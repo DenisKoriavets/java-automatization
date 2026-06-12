@@ -6,5 +6,11 @@
 <module name="Checker">
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
+        <module name="UnusedImports"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="ConstantName"/>
     </module>
 </module>
