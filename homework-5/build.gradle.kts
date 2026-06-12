@@ -1,6 +1,24 @@
 plugins {
     id("java")
     id("checkstyle")
+    id("maven-publish")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/DenisKoriavets/java-automatization")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 group = "ua.edu.ukma"

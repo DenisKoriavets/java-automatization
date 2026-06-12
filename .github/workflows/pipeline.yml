@@ -41,3 +41,9 @@ jobs:
         with:
           name: homework-5-artifact
           path: homework-5/build/libs/*.jar
+
+      - name: Публікація в GitHub Packages
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
