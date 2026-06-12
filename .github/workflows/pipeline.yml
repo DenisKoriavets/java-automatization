@@ -10,6 +10,10 @@ jobs:
   build-analyze-test:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./homework-5
+
     steps:
       - name: Завантаження коду з репозиторію
         uses: actions/checkout@v4
@@ -24,13 +28,13 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Статичний аналіз коду (Checkstyle)
-        run: ./gradlew :homework-5:checkstyleMain
+        run: ./gradlew checkstyleMain
 
       - name: Автоматизоване тестування
-        run: ./gradlew :homework-5:test
+        run: ./gradlew test
 
       - name: Збирання проєкту в JAR
-        run: ./gradlew :homework-5:assemble
+        run: ./gradlew assemble
 
       - name: Збереження JAR як артефакту
         uses: actions/upload-artifact@v4
